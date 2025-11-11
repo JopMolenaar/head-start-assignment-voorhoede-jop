@@ -1,0 +1,37 @@
+---
+import Layout from '@layouts/Default.astro';
+import Blocks from '@blocks/Blocks.astro';
+import PreviewModeSubscription from '@components/PreviewMode/PreviewModeSubscription.astro';
+import { getCollection, getEntry } from '@lib/content';
+
+export async function getStaticPaths() {
+  // Fetch all locales by passing locale `null` and filter `undefined`.
+  const pages = await getCollection('Pages', undefined, null);
+  return pages.map(({ 
+    data: page,
+  }) => ({
+    params: { locale: page.meta.locale, path: page.meta.path },
+  }));
+}
+
+// Load as an entry so this route can also be a server route in preview mode.
+// @see /docs/preview-mode.md
+const { path } = Astro.params;
+const entry = await getEntry('Pages', path);
+if (!entry) {
+  return Astro.redirect('/404', 404);
+}
+
+const { data: { meta, ...page }, subscription } = entry;
+const { breadcrumbs, pageUrls } = meta;
+---
+
+<Layout
+  breadcrumbs={breadcrumbs}
+  pageUrls={pageUrls}
+  seoMetaTags={page._seoMetaTags}
+>
+  <PreviewModeSubscription {...subscription} />
+  <h1>{page.title}</h1>
+  <Blocks blocks={page.bodyBlocks} />
+</Layout>

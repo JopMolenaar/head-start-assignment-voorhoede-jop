@@ -1,0 +1,44 @@
+#import '@blocks/ActionBlock/ActionBlock.fragment.graphql'
+#import '@blocks/ImageBlock/ImageBlock.fragment.graphql'
+#import '@blocks/TableBlock/TableBlock.fragment.graphql'
+#import '@blocks/VideoBlock/VideoBlock.fragment.graphql'
+#import '@blocks/VideoEmbedBlock/VideoEmbedBlock.fragment.graphql'
+#import '@lib/routing/FileRoute.fragment.graphql'
+#import '@lib/routing/HomeRoute.fragment.graphql'
+#import '@lib/routing/PageRoute.fragment.graphql'
+
+fragment TextBlock on TextBlockRecord {
+  text {
+    blocks {
+      __typename
+      ... on ActionBlockRecord {
+        ...ActionBlock
+      }
+      ... on ImageBlockRecord {
+        ...ImageBlock
+      }
+      ... on TableBlockRecord {
+        ...TableBlock
+      }
+      ... on VideoBlockRecord {
+        ...VideoBlock
+      }
+      ... on VideoEmbedBlockRecord {
+        ...VideoEmbedBlock
+      }
+    }
+    links {
+      __typename
+      ... on FileRecord {
+        ...FileRoute
+      }
+      ... on HomePageRecord {
+        ...HomeRoute
+      }
+      ... on PageRecord {
+        ...PageRoute
+      }
+    }
+    value
+  }
+}

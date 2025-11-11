@@ -1,0 +1,24 @@
+#import './InternalLink.fragment.graphql'
+#import './ExternalLink.fragment.graphql'
+#import './EmailLink.fragment.graphql'
+#import './PhoneLink.fragment.graphql'
+
+fragment ActionBlock on ActionBlockRecord {
+  __typename
+  id
+  items {
+    __typename
+    ... on InternalLinkRecord {
+      ...InternalLink
+    }
+    ... on ExternalLinkRecord {
+      ...ExternalLink
+    }
+    ... on EmailLinkRecord {
+      ...EmailLink
+    }
+    ... on PhoneLinkRecord {
+      ...PhoneLink
+    }
+  }
+}

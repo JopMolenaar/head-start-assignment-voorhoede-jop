@@ -1,0 +1,215 @@
+---
+import type { VideoEmbedBlockFragment, VideoField } from '@lib/datocms/types';
+import { t } from '@lib/i18n';
+import Icon from '@components/Icon';
+import PlayButton from './PlayButton.astro';
+
+export interface Props {
+  block: VideoEmbedBlockFragment;
+}
+const { block } = Astro.props;
+const { autoplay = false, loop = false, mute = false, video } = block;
+const aspectRatio = `${video.width} / ${video.height}`;
+const title = block.title || video.title;
+const providerName =
+  { youtube: 'YouTube', vimeo: 'Vimeo' }[video.provider] || video.provider;
+const vimeoSizeRegex = /_\d+(x\d+)?(\.\w+)?$/; // match _123(.ext) and _123x123(.ext)
+
+function getImageSrcSet({ video }: { video: VideoField }) {
+  switch (video.provider) {
+  case 'youtube':
+    // YouTube has a fixed set of predefined thumbnail sizes available:
+    return [
+      `https://img.youtube.com/vi/${video.providerUid}/maxresdefault.jpg 1280w`,
+      `https://img.youtube.com/vi/${video.providerUid}/sddefault.jpg 640w`,
+      `https://img.youtube.com/vi/${video.providerUid}/hqdefault.jpg 480w`,
+      `https://img.youtube.com/vi/${video.providerUid}/mqdefault.jpg 320w`,
+    ].join(', ');
+  case 'vimeo':
+    // Vimeo can generate thumbnails at any size. We'll match the YouTube sizes:
+    return [1280, 640, 480, 320]
+      .map((size) => {
+        const url = video.thumbnailUrl.replace(
+          vimeoSizeRegex,
+          `_${size}.jpg`
+        );
+        return `${url} ${size}w`;
+      })
+      .join(', ');
+  default:
+    return video.thumbnailUrl;
+  }
+}
+
+function getImageUrl({ video }: { video: VideoField }) {
+  switch (video.provider) {
+  case 'youtube':
+    return `https://img.youtube.com/vi/${video.providerUid}/maxresdefault.jpg`;
+  case 'vimeo':
+    return video.thumbnailUrl.replace(vimeoSizeRegex, '_1280.jpg');
+  default:
+    return video.thumbnailUrl;
+  }
+}
+
+function getVideoUrl({
+  loop,
+  mute,
+  video,
+}: {
+  loop: boolean;
+  mute: boolean;
+  video: VideoField;
+}) {
+  // the video only loads if block.autoplay is true or user clicks the thumbnail
+  // so in any case the autoplay option in the video url should always be true:
+  const autoplay = true;
+  const binaryBoolean = (value: boolean) => (value ? '1' : '0');
+  switch (video.provider) {
+  case 'youtube':
+    return new URL(
+      `https://www.youtube.com/embed/${
+        video.providerUid
+      }?${new URLSearchParams({
+        autoplay: binaryBoolean(autoplay),
+        mute: binaryBoolean(mute),
+        loop: binaryBoolean(loop),
+        playlist: video.providerUid,
+      })}`
+    ).toString();
+  case 'vimeo':
+    return new URL(
+      `https://player.vimeo.com/video/${
+        video.providerUid
+      }?${new URLSearchParams({
+        autoplay: binaryBoolean(autoplay),
+        autopause: binaryBoolean(!autoplay),
+        muted: binaryBoolean(mute),
+        loop: binaryBoolean(loop),
+      })}`
+    ).toString();
+  default:
+    return video.url;
+  }
+}
+---
+
+<figure>
+  <video-embed
+    data-autoplay={autoplay ? 'true' : undefined}
+    data-provider={video.provider}
+    data-video-url={getVideoUrl({
+      loop: Boolean(loop),
+      mute: Boolean(mute),
+      video,
+    })}
+    style={{ aspectRatio }}
+  >
+    <PlayButton href={video.url}>
+      <img
+        alt={t('play_video_title', { title })}
+        loading="lazy"
+        src={getImageUrl({ video })}
+        srcset={getImageSrcSet({ video })}
+        style={{ aspectRatio }}
+      />
+    </PlayButton>
+
+    <div class="consent-alert" role="alert" hidden>
+      <p class="consent-alert__text">
+        {t('consent_message_service', { service: providerName })}
+      </p>
+      <div class="consent-alert__actions">
+        <button type="button" class="action--primary"
+        >{t('allow_service', { service: providerName })}</button
+        >
+        <a
+          href={video.url}
+          class="action--secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('watch_video_on_provider', { provider: providerName })}
+          <Icon name="external" />
+        </a>
+      </div>
+    </div>
+
+    <iframe
+      hidden
+      allowfullscreen
+      allow="autoplay"
+      title={title}
+      style={{ aspectRatio }}></iframe>
+  </video-embed>
+  <figcaption>
+    <a href={video.url} target="_blank" rel="noopener noreferrer">
+      {title} ({t('watch_video_on_provider', { provider: providerName })}) <Icon
+        name="external"
+      />
+    </a>
+  </figcaption>
+</figure>
+
+<script src="./VideoEmbedBlock.client.ts"></script>
+
+<style>
+  /* functional styling */
+  video-embed {
+    display: block;
+    position: relative;
+    width: 100%;
+    background-color: #f1f1f1;
+  }
+
+  img,
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+  }
+  img {
+    z-index: 0;
+    object-fit: cover;
+  }
+  iframe {
+    z-index: 3;
+    border: none;
+  }
+
+  .consent-alert:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    width: 100%;
+    min-height: 100%;
+  }
+
+  .consent-alert__text {
+    max-width: 400px;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .consent-alert__actions {
+    text-align: center;
+  }
+
+  /* basic styling, can be removed */
+  video-embed {
+    margin-block: 20px;
+  }
+  figcaption {
+    text-align: center;
+  }
+
+  [data-icon="external"] {
+    width: 1em;
+    height: 1em;
+    margin-left: 0.5em;
+    vertical-align: middle;
+  }
+</style>

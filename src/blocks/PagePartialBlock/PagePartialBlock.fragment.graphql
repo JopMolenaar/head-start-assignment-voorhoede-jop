@@ -1,0 +1,7 @@
+fragment PagePartialBlock on PagePartialBlockRecord {
+  id
+  items {
+    id
+  }
+  layout
+}

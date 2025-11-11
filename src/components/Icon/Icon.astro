@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { IconName } from '@assets/icon-sprite';
+export { iconNames } from '@assets/icon-sprite';
+
+interface Props extends HTMLAttributes<'svg'> {
+  name: IconName;
+};
+
+const { 
+  name,
+  'aria-label': ariaLabel, 
+  ...props 
+} = Astro.props;
+---
+
+<svg 
+  data-icon={name} 
+  role={ariaLabel ? 'img' : 'presentation'} 
+  aria-hidden={!ariaLabel} 
+  aria-label={ariaLabel} 
+  {...props}
+>
+  <use href={`#${name}`} />
+</svg>
+
+<style>
+  svg {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    color: currentColor;
+    fill: currentColor;
+  }
+</style>

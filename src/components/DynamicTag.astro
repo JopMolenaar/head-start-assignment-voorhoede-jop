@@ -1,0 +1,13 @@
+---
+// source https://docs.astro.build/en/guides/typescript/#polymorphic-type
+import type { HTMLTag, Polymorphic } from 'astro/types';
+
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }>
+
+const { as: Tag, ...props } = Astro.props;
+---
+
+{ Astro.slots.has('default') 
+  ? <Tag {...props}><slot /></Tag>
+  : <Tag {...props} />
+}
