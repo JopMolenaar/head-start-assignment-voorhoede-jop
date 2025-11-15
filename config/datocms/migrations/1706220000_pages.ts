@@ -248,7 +248,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'single_line',
       parameters: { heading: true, placeholder: null },
-      type: 'title',
     },
     default_value: { en: '' },
   });
@@ -315,7 +314,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'single_line',
       parameters: { heading: true, placeholder: null },
-      type: 'title',
     },
     default_value: { en: '' },
   });
@@ -561,7 +559,6 @@ export default async function (client: Client) {
       addons: [],
       editor: 'single_line',
       parameters: { heading: true, placeholder: null },
-      type: 'title',
     },
     default_value: { en: '' },
   });
