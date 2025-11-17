@@ -1,0 +1,4 @@
+fragment WeatherBlock on WeatherBlockRecord {
+  id
+  title
+}
