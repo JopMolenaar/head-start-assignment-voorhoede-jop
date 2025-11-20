@@ -1,17 +1,12 @@
+import type { APIRoute } from 'astro';
+import { VISUALCROSSING_KEY } from 'astro:env/server';
+
 export const prerender = false;
 
-import type { APIRoute } from 'astro';
-
-export const GET: APIRoute = async (context) => {
-
-  const runtimeKey =
-    'env' in context
-      ? (context.env as { VISUALCROSSING_KEY?: string }).VISUALCROSSING_KEY
-      : undefined;
-  const localKey = import.meta.env.VISUALCROSSING_KEY;
-  const API_KEY = runtimeKey ?? localKey;
+export const GET: APIRoute = async ({ params }) => {
+  const API_KEY = VISUALCROSSING_KEY;
   
-  const city = context.params.city as string;
+  const city = params.city as string;
 
   const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=${API_KEY}&include=days,current&iconSet=icons2`;  
  

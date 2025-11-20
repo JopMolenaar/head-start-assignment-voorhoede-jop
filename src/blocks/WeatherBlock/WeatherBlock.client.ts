@@ -39,7 +39,7 @@ async function fetchWeatherByCity(city: string) {
 
   if(data.error) {
     console.error('Error fetching weather data:', data.details);
-    output.textContent = 'Couldn`t find the location.';
+    output.textContent = 'Couldn`t find a location.';
     return;
   }  
 
