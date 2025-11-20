@@ -2,9 +2,8 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 
-const API_KEY = import.meta.env.VISUALCROSSING_KEY;
-
 export const GET: APIRoute = async ({ params }) => {
+  const API_KEY = import.meta.env.VISUALCROSSING_KEY;
   const city = params.city as string;
 
   const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=${API_KEY}&include=days,current&iconSet=icons2`;  

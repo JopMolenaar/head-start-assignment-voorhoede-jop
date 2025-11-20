@@ -48,7 +48,12 @@ export default defineConfig({
         context: 'server',
         access: 'public',
         default: process.env.NODE_ENV === 'production'
-      })
+      }),
+      VISUALCROSSING_KEY: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: process.env.VISUALCROSSING_KEY,
+      }),
     }
   },
   integrations: [

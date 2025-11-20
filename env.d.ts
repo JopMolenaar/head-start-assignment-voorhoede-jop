@@ -9,6 +9,7 @@ declare global {
       DATOCMS_READONLY_API_TOKEN: string;
       HEAD_START_PREVIEW?: string;
       HEAD_START_PREVIEW_SECRET: string;
+      VISUALCROSSING_KEY: string;
     }
   }
 }
