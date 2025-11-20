@@ -1,4 +1,7 @@
 fragment WeatherBlock on WeatherBlockRecord {
   id
   title
+  infoText
+  defaultCity
+  forecast
 }
