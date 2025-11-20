@@ -155,6 +155,9 @@ async function fetchWeatherByLocation(userInput: boolean) {
     console.log('Location denied. Using default city');
     // TODO show UI message “enable location in browser settings”
     fetchWeatherByCity(defaultCity);
+  } else {
+    // Use the default city when entering the page for the first time
+    fetchWeatherByCity(defaultCity);
   }
 }
 
