@@ -3,4 +3,4 @@
  * @see docs/decision-log/2023-10-24-datocms-env-file.md on why file is preferred over env vars
  */
 export const datocmsEnvironment = 'weather-app';
-export const datocmsBuildTriggerId = '34548';
+export const datocmsBuildTriggerId = '37932';
