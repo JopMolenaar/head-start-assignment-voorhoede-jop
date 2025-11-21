@@ -6,7 +6,7 @@ export interface WeatherResponse {
 export interface CurrentConditions {
   datetime: string;
   temp: number;
-  icon?: string;
+  icon: string;
   conditions: string;
   // add more fields if needed from the API
 }
@@ -15,18 +15,18 @@ export interface WeatherDay {
   temp: number;
   tempmax: number;
   tempmin: number;
-  icon?: string;
+  icon: string;
   conditions: string;
 }
 
-const el = document.getElementById('weather-block')!;
+const weatherBlock = document.getElementById('weather-block')!;
 const output = document.getElementById('weather-output')!;
 const cityInput = document.getElementById('city-input')! as HTMLInputElement;
 const searchCityBtn = document.getElementById('search-button')!;
 const useLocationBtn = document.getElementById('geolocation-button')!;
 
-const defaultCity = el.dataset.defaultCity || 'Amsterdam';
-const forecast = el.dataset.forecast === 'true';
+const defaultCity = weatherBlock.dataset.defaultCity || 'Amsterdam';
+const forecast = weatherBlock.dataset.forecast === 'true';
 
 // Fetch weather data
 async function fetchWeatherByCity(city: string) {
