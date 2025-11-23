@@ -71,7 +71,7 @@ function renderWeather(data: WeatherResponse) {
   output.innerHTML = `
     <p>${new Date(day.datetime).toLocaleDateString('en-EN', { weekday: 'long' })}; at ${locationDisplay}</p>
     <div class="weather-now">
-        <p><strong style="font-size:2rem;">${current.temp}°C</strong></p>
+        <p><strong>${current.temp}°C</strong></p>
         <p>${day.tempmax}° / ${day.tempmin}°</p>
         <img src="${icon}" alt="A weather icon that represents the weathercondition; ${current.conditions}" />
     </div>
